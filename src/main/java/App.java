@@ -1,4 +1,4 @@
-package trab2;
+
 
 /**
  * Hello world!
