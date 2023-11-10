@@ -22,3 +22,4 @@ target/
 *.conf
 *.json
 *.properties
+*.env

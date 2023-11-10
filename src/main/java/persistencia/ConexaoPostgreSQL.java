@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import io.github.cdimascio.dotenv.Dotenv;
  
 public class ConexaoPostgreSQL {
     private String host;
@@ -12,13 +13,15 @@ public class ConexaoPostgreSQL {
     private String password;
     private String dbname;
     private String port;
-     
+    private Dotenv dotenv = Dotenv.configure().load();
+    
+    
     public ConexaoPostgreSQL(){
-        this.host = "localhost";
-        this.dbname = "aula";
-        this.username = "postgres";
-        this.password = "postgres";
-        this.port = "5432";
+        this.host = dotenv.get("POSTGRES_HOST");;
+        this.dbname = dotenv.get("POSTGRES_DBNAME");;
+        this.username = dotenv.get("POSTGRES_USERNAME");
+        this.password = dotenv.get("POSTGRES_PASSWORD");
+        this.port = dotenv.get("POSTGRES_PORT");;
     }
      
     public Connection getConexao(){
