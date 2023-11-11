@@ -16,16 +16,16 @@ public class ConexaoPostgreSQL {
     private Dotenv dotenv = Dotenv.configure().load();
     
     
-    public ConexaoPostgreSQL(){
-        this.host = dotenv.get("POSTGRES_HOST");;
-        this.dbname = dotenv.get("POSTGRES_DBNAME");;
+    public ConexaoPostgreSQL() {
+        this.host = dotenv.get("POSTGRES_HOST");
+        this.dbname = dotenv.get("POSTGRES_DBNAME");
         this.username = dotenv.get("POSTGRES_USERNAME");
         this.password = dotenv.get("POSTGRES_PASSWORD");
-        this.port = dotenv.get("POSTGRES_PORT");;
+        this.port = dotenv.get("POSTGRES_PORT");
     }
-     
-    public Connection getConexao(){
-        String url = "jdbc:postgresql://"+this.host+":"+this.port+"/"+this.dbname;
+
+    public Connection getConexao() {
+        String url = "jdbc:postgresql://" + this.host + ":" + this.port + "/" + this.dbname;
         try {
             System.out.println("Show de bola! Estou 'connect'");
             return DriverManager.getConnection(url, this.username, this.password);
