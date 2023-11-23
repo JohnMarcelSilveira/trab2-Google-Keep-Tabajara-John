@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import model.Anotacao;
 
@@ -35,14 +36,13 @@ public class AnotacaoDAO {
         connection.close();
     }
 
-    public Anotacao obter(String id) throws SQLException {
+    public Anotacao obter(UUID id) throws SQLException {
         Anotacao anotacao = new Anotacao();
-        UUID uuid = UUID.fromString(id);
         String sql = "select * from anotacao where id = ?;";
         Connection connection = new ConexaoPostgreSQL().getConexao();
 
         PreparedStatement instrucaoSQL = connection.prepareStatement(sql);
-        instrucaoSQL.setObject(1, uuid);
+        instrucaoSQL.setObject(1, id);
         ResultSet rs = instrucaoSQL.executeQuery();
         if (rs.next()) {
             anotacao.setId((UUID)rs.getObject("id"));
@@ -66,14 +66,12 @@ public class AnotacaoDAO {
         return anotacao;
     }
 
-    public boolean excluir(String id) throws SQLException {
-        UUID uuid = UUID.fromString(id);
-
+    public boolean excluir(UUID id) throws SQLException {
         String sql = "DELETE from anotacao WHERE id = ?;";
         Connection connection = new ConexaoPostgreSQL().getConexao();
 
         PreparedStatement instrucaoSQL = connection.prepareStatement(sql);
-        instrucaoSQL.setObject(1, uuid);
+        instrucaoSQL.setObject(1, id);
         int resultado = instrucaoSQL.executeUpdate();
         instrucaoSQL.close();
         connection.close();
@@ -98,34 +96,50 @@ public class AnotacaoDAO {
         return resultado == 1;
     }
 
-    public void duplicar(String id) throws SQLException {
+    public void duplicar(UUID id) throws SQLException {
         Anotacao anotacao = obter(id);
         anotacao.setId(UUID.randomUUID());
         inserir(anotacao);
     }
 
-    public void ordenarPorDataCriacao() throws SQLException {
+    public ArrayList<Anotacao> ordenarPorDataCriacao() throws SQLException {
+        ArrayList<Anotacao> anotacoes = new ArrayList<Anotacao>();
         String sql = "select * from anotacao order by data_criacao;";
         Connection connection = new ConexaoPostgreSQL().getConexao();
 
         PreparedStatement instrucaoSQL = connection.prepareStatement(sql);
         ResultSet rs = instrucaoSQL.executeQuery();
-        while (rs.next()) {
-            System.out.println(rs.getString("titulo"));
-        }
+         if (rs.next()) {
+            Anotacao anotacao = new Anotacao();
+            anotacao.setId((UUID)rs.getObject("id"));
+            anotacao.setTitulo(rs.getString("titulo"));
+            anotacao.setDescricao(rs.getString("descricao"));
+            anotacao.setDataCriacao(rs.getTimestamp("data_criacao").toLocalDateTime().format(formatter));
+            anotacao.setDataEdicao(rs.getTimestamp("data_edicao").toLocalDateTime().format(formatter));
+            anotacao.setFoto(rs.getBytes("foto"));
+            anotacao.setLixeira(rs.getBoolean("lixeira"));
+            
+            Timestamp timestampDataExclusao = rs.getTimestamp("data_exclusao");
+            anotacao.setDataExclusao(timestampDataExclusao != null ? timestampDataExclusao.toLocalDateTime().format(formatter) : null);
 
+            
+            anotacao.setCor(rs.getString("cor"));
+            
+            anotacoes.add(anotacao);
+        }
         instrucaoSQL.close();
         connection.close();
+
+        return anotacoes;
     }
 
-    public void excluirParaLixeira(String id) throws SQLException {
-        UUID uuid = UUID.fromString(id);
+    public void moverParaLixeira(UUID id) throws SQLException {       
         String sql = "update anotacao set lixeira = true, data_exclusao = ? where id = ?;";
         Connection connection = new ConexaoPostgreSQL().getConexao();
 
         PreparedStatement instrucaoSQL = connection.prepareStatement(sql);
         instrucaoSQL.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
-        instrucaoSQL.setObject(2, uuid);
+        instrucaoSQL.setObject(2, id);
         instrucaoSQL.executeUpdate();
         instrucaoSQL.close();
         connection.close();
