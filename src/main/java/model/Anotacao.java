@@ -7,15 +7,17 @@ public class Anotacao {
     private UUID id; // chave primaria 
     private String titulo;
     private String descricao;
-    private LocalDateTime dataCriacao;
-    private LocalDateTime dataEdicao;
+    private String dataCriacao;
+    private String dataEdicao;
     private byte[] foto;
     private boolean lixeira;
-    private LocalDateTime dataExclusao;
-    private UUID corId; // chave estrangeira
+    private String dataExclusao;
+    private String cor; 
     
     // getters e setters
     public UUID getId() {
+        if(id == null)
+            setId(UUID.randomUUID());
         return id;
     }
     
@@ -39,19 +41,19 @@ public class Anotacao {
         this.descricao = descricao;
     }
     
-    public LocalDateTime getDataCriacao() {
+    public String getDataCriacao() {
         return dataCriacao;
     }
     
-    public void setDataCriacao(LocalDateTime dataCriacao) {
+    public void setDataCriacao(String dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
     
-    public LocalDateTime getDataEdicao() {
+    public String getDataEdicao() {
         return dataEdicao;
     }
     
-    public void setDataEdicao(LocalDateTime dataEdicao) {
+    public void setDataEdicao(String dataEdicao) {
         this.dataEdicao = dataEdicao;
     }
     
@@ -71,20 +73,20 @@ public class Anotacao {
         this.lixeira = lixeira;
     }
 
-    public LocalDateTime getDataExclusao() {
+    public String getDataExclusao() {
         return dataExclusao;
     }
 
-    public void setDataExclusao(LocalDateTime dataExclusao) {
+    public void setDataExclusao(String dataExclusao) {
         this.dataExclusao = dataExclusao;
     }
     
-    public UUID getCorId() {
-        return corId;
+    public String getCor() {
+        return cor;
     }
     
-    public void setCorId(UUID corId) {
-        this.corId = corId;
+    public void setCor(String cor) {
+        this.cor = cor;
     }
 }
     
