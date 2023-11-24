@@ -17,7 +17,7 @@ public class AnotacaoRoutes {
 
     public void setupRoutes() {
         Spark.port(8080);
-        
+
         Spark.get("/", (request, response) -> {
             try {
                 List<Anotacao> anotacoes = anotacaoController.listarAnotacoes();
@@ -27,57 +27,10 @@ public class AnotacaoRoutes {
             }
         });
 
-        Spark.post("/adicionar", (request, response) -> {
-            try {
-                Anotacao anotacao = gson.fromJson(request.body(), Anotacao.class);
-                anotacaoController.adicionarAnotacao(anotacao);
-                return gson.toJson("Anotação adicionada com sucesso!");
-            } catch (Exception e) {
-                return gson.toJson(e.getMessage());
-            }
-        });
-
         Spark.get("/obter/:id", (request, response) -> {
             try {
                 Anotacao anotacao = anotacaoController.obterAnotacao(request.params(":id"));
                 return gson.toJson(anotacao);
-            } catch (Exception e) {
-                return gson.toJson(e.getMessage());
-            }
-        });
-
-        Spark.put("/editar/:id", (request, response) -> {
-            try {
-                Anotacao anotacao = gson.fromJson(request.body(), Anotacao.class);
-                anotacaoController.editarAnotacao(anotacao);
-                return gson.toJson("Anotação editada com sucesso!");
-            } catch (Exception e) {
-                return gson.toJson(e.getMessage());
-            }
-        });
-
-        Spark.delete("/excluir/:id", (request, response) -> {
-            try {
-                String msgRetorno = "";
-                Anotacao anotacao = anotacaoController.obterAnotacao(request.params(":id"));
-                if (anotacao.isLixeira()) {
-                    anotacaoController.excluirAnotacao(request.params(":id"));
-                    msgRetorno = "Anotação excluída definitamente com sucesso!";
-                } else {
-                    anotacaoController.moverParaLixeira(request.params(":id"));
-                    msgRetorno = "Anotação enviada para lixeira com sucesso!";
-                }
-                ;
-                return gson.toJson(msgRetorno);
-            } catch (Exception e) {
-                return gson.toJson(e.getMessage());
-            }
-        });
-
-        Spark.put("/duplicar/:id", (request, response) -> {
-            try {
-                anotacaoController.duplicarAnotacao(request.params(":id"));
-                return gson.toJson("Anotação duplicada com sucesso!");
             } catch (Exception e) {
                 return gson.toJson(e.getMessage());
             }
@@ -101,10 +54,30 @@ public class AnotacaoRoutes {
             }
         });
 
-        Spark.delete("/esvaziarLixeira", (request, response) -> {
+        Spark.post("/adicionar", (request, response) -> {
             try {
-                anotacaoController.esvaziarLixeira();
-                return gson.toJson("Lixeira esvaziada com sucesso!");
+                Anotacao anotacao = gson.fromJson(request.body(), Anotacao.class);
+                anotacaoController.adicionarAnotacao(anotacao);
+                return gson.toJson("Anotação adicionada com sucesso!");
+            } catch (Exception e) {
+                return gson.toJson(e.getMessage());
+            }
+        });
+
+        Spark.put("/editar/:id", (request, response) -> {
+            try {
+                Anotacao anotacao = gson.fromJson(request.body(), Anotacao.class);
+                anotacaoController.editarAnotacao(anotacao);
+                return gson.toJson("Anotação editada com sucesso!");
+            } catch (Exception e) {
+                return gson.toJson(e.getMessage());
+            }
+        });
+
+        Spark.put("/duplicar/:id", (request, response) -> {
+            try {
+                anotacaoController.duplicarAnotacao(request.params(":id"));
+                return gson.toJson("Anotação duplicada com sucesso!");
             } catch (Exception e) {
                 return gson.toJson(e.getMessage());
             }
@@ -114,6 +87,33 @@ public class AnotacaoRoutes {
             try {
                 anotacaoController.restaurarDaLixeira(request.params(":id"));
                 return gson.toJson("Anotação restaurada com sucesso!");
+            } catch (Exception e) {
+                return gson.toJson(e.getMessage());
+            }
+        });
+
+        Spark.delete("/excluir/:id", (request, response) -> {
+            try {
+                String msgRetorno = "";
+                Anotacao anotacao = anotacaoController.obterAnotacao(request.params(":id"));
+                if (anotacao.isLixeira()) {
+                    anotacaoController.excluirAnotacao(request.params(":id"));
+                    msgRetorno = "Anotação excluída definitamente com sucesso!";
+                } else {
+                    anotacaoController.moverParaLixeira(request.params(":id"));
+                    msgRetorno = "Anotação enviada para lixeira com sucesso!";
+                }
+                ;
+                return gson.toJson(msgRetorno);
+            } catch (Exception e) {
+                return gson.toJson(e.getMessage());
+            }
+        });
+
+        Spark.delete("/esvaziarLixeira", (request, response) -> {
+            try {
+                anotacaoController.esvaziarLixeira();
+                return gson.toJson("Lixeira esvaziada com sucesso!");
             } catch (Exception e) {
                 return gson.toJson(e.getMessage());
             }
