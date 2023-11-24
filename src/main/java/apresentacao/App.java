@@ -18,12 +18,9 @@ public class App {
             exception.printStackTrace();
         });
 
-        // Configuração de outras rotas e middlewares...
-
         anotacaoRoutes.setupRoutes();
 
-        Spark.after((request, response) -> {
-            response.type("application/json");
-        });
+        System.out.println("Servidor rodando em http://localhost:8080");
+
     }
 }

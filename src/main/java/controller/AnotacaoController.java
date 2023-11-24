@@ -1,7 +1,7 @@
 package controller;
 
 import model.Anotacao;
-import persistencia.AnotacaoDAO;
+import repository.AnotacaoDAO;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,33 +34,21 @@ public class AnotacaoController {
         anotacaoDAO.excluir(UUID.fromString(id));
     }
 
-    public void restaurarAnotacao(String id) throws SQLException {
-        //anotacaoDAO.restaurar(UUID.fromString(id));
+    public List<Anotacao> listarAnotacoesLixeira() throws SQLException {
+        return anotacaoDAO.listarLixeira();
     }
 
-    public void excluirDefinitivamenteAnotacao(String id) throws SQLException {
-        // anotacaoDAO.excluirDefinitivamente(UUID.fromString(id));
+    public void esvaziarLixeira() throws SQLException {
+        anotacaoDAO.esvaziarLixeira();
     }
-
-    // public List<Anotacao> listarAnotacoesLixeira() throws SQLException {
-    //     return anotacaoDAO.listarLixeira();
-    // }
-
-    // public void esvaziarLixeira() throws SQLException {
-    //     anotacaoDAO.esvaziarLixeira();
-    // }
 
     public void moverParaLixeira(String id) throws SQLException {
         anotacaoDAO.moverParaLixeira(UUID.fromString(id));
     }
 
-    // public void restaurarDaLixeira(String id) throws SQLException {
-    //     anotacaoDAO.restaurarDaLixeira(UUID.fromString(id));
-    // }
-
-    // public void excluirDefinitivamenteDaLixeira(String id) throws SQLException {
-    //     anotacaoDAO.excluirDefinitivamenteDaLixeira(UUID.fromString(id));
-    // }
+    public void restaurarDaLixeira(String id) throws SQLException {
+        anotacaoDAO.restaurarDaLixeira(UUID.fromString(id));
+    }
 
     public void duplicarAnotacao(String id) throws SQLException {
         anotacaoDAO.duplicar(UUID.fromString(id));
@@ -70,15 +58,8 @@ public class AnotacaoController {
         return anotacaoDAO.ordenarPorDataCriacao();
     }
 
-    // public void ordenarAnotacoesPorDataEdicao() throws SQLException {
-    //     anotacaoDAO.ordenarPorDataEdicao();
-    // }
 
-    // public void ordenarAnotacoesPorTitulo() throws SQLException {
-    //     anotacaoDAO.ordenarPorTitulo();
-    // }
-
-    // public void ordenarAnotacoesPorCor() throws SQLException {
-    //     anotacaoDAO.ordenarPorCor();
-    // }
+    public List<Anotacao> ordenarAnotacoesPorTitulo() throws SQLException {
+       return anotacaoDAO.ordenarPorTitulo();
+    }
 }

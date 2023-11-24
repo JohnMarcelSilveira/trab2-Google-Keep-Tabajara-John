@@ -61,7 +61,7 @@ public class AnotacaoRoutes {
                 String msgRetorno = "";
                 Anotacao anotacao = anotacaoController.obterAnotacao(request.params(":id"));
                 if (anotacao.isLixeira()) {
-                    anotacaoController.excluirDefinitivamenteAnotacao(request.params(":id"));
+                    anotacaoController.excluirAnotacao(request.params(":id"));
                     msgRetorno = "Anotação excluída definitamente com sucesso!";
                 } else {
                     anotacaoController.moverParaLixeira(request.params(":id"));
@@ -87,6 +87,33 @@ public class AnotacaoRoutes {
             try {
                 List<Anotacao> anotacoes = anotacaoController.ordenarAnotacoesPorDataCriacao();
                 return gson.toJson(anotacoes);
+            } catch (Exception e) {
+                return gson.toJson(e.getMessage());
+            }
+        });
+
+        Spark.get("/lixeira", (request, response) -> {
+            try {
+                List<Anotacao> anotacoes = anotacaoController.listarAnotacoesLixeira();
+                return gson.toJson(anotacoes);
+            } catch (Exception e) {
+                return gson.toJson(e.getMessage());
+            }
+        });
+
+        Spark.delete("/esvaziarLixeira", (request, response) -> {
+            try {
+                anotacaoController.esvaziarLixeira();
+                return gson.toJson("Lixeira esvaziada com sucesso!");
+            } catch (Exception e) {
+                return gson.toJson(e.getMessage());
+            }
+        });
+
+        Spark.put("/restaurar/:id", (request, response) -> {
+            try {
+                anotacaoController.restaurarDaLixeira(request.params(":id"));
+                return gson.toJson("Anotação restaurada com sucesso!");
             } catch (Exception e) {
                 return gson.toJson(e.getMessage());
             }

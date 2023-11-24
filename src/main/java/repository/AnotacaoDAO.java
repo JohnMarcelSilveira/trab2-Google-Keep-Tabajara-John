@@ -1,4 +1,4 @@
-package persistencia;
+package repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -173,6 +173,111 @@ public class AnotacaoDAO {
 
         instrucaoSQL.close();
         connection.close();
+
+        return anotacoes;
+    }
+
+    public List<Anotacao> listarLixeira() {
+       ArrayList<Anotacao> anotacoes = new ArrayList<Anotacao>();
+        String sql = "select * from anotacao where lixeira = true;";
+        Connection connection = new ConexaoPostgreSQL().getConexao();
+
+        PreparedStatement instrucaoSQL;
+        try {
+            instrucaoSQL = connection.prepareStatement(sql);
+            ResultSet rs = instrucaoSQL.executeQuery();
+            
+            while (rs.next()) {
+                Anotacao anotacao = new Anotacao();
+                anotacao.setId((UUID)rs.getObject("id"));
+                anotacao.setTitulo(rs.getString("titulo"));
+                anotacao.setDescricao(rs.getString("descricao"));
+                anotacao.setDataCriacao(rs.getTimestamp("data_criacao").toLocalDateTime().format(formatter));
+                anotacao.setDataEdicao(rs.getTimestamp("data_edicao").toLocalDateTime().format(formatter));
+                anotacao.setFoto(rs.getBytes("foto"));
+                anotacao.setLixeira(rs.getBoolean("lixeira"));
+                
+                Timestamp timestampDataExclusao = rs.getTimestamp("data_exclusao");
+                anotacao.setDataExclusao(timestampDataExclusao != null ? timestampDataExclusao.toLocalDateTime().format(formatter) : null);
+
+                
+                anotacao.setCor(rs.getString("cor"));  
+                anotacoes.add(anotacao);
+            }
+
+            instrucaoSQL.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return anotacoes;
+    }
+
+    public void esvaziarLixeira() {
+        String sql = "delete from anotacao where lixeira = true;";
+        Connection connection = new ConexaoPostgreSQL().getConexao();
+
+        PreparedStatement instrucaoSQL;
+        try {
+            instrucaoSQL = connection.prepareStatement(sql);
+            instrucaoSQL.executeUpdate();
+            instrucaoSQL.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void restaurarDaLixeira(UUID id) {
+        String sql = "update anotacao set lixeira = false, data_exclusao = null where id = ?;";
+        Connection connection = new ConexaoPostgreSQL().getConexao();
+
+        PreparedStatement instrucaoSQL;
+        try {
+            instrucaoSQL = connection.prepareStatement(sql);
+            instrucaoSQL.setObject(1, id);
+            instrucaoSQL.executeUpdate();
+            instrucaoSQL.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Anotacao> ordenarPorTitulo() {
+        ArrayList<Anotacao> anotacoes = new ArrayList<Anotacao>();
+        String sql = "select * from anotacao order by titulo;";
+        Connection connection = new ConexaoPostgreSQL().getConexao();
+
+        PreparedStatement instrucaoSQL;
+        try {
+            instrucaoSQL = connection.prepareStatement(sql);
+            ResultSet rs = instrucaoSQL.executeQuery();
+            
+            while (rs.next()) {
+                Anotacao anotacao = new Anotacao();
+                anotacao.setId((UUID)rs.getObject("id"));
+                anotacao.setTitulo(rs.getString("titulo"));
+                anotacao.setDescricao(rs.getString("descricao"));
+                anotacao.setDataCriacao(rs.getTimestamp("data_criacao").toLocalDateTime().format(formatter));
+                anotacao.setDataEdicao(rs.getTimestamp("data_edicao").toLocalDateTime().format(formatter));
+                anotacao.setFoto(rs.getBytes("foto"));
+                anotacao.setLixeira(rs.getBoolean("lixeira"));
+                
+                Timestamp timestampDataExclusao = rs.getTimestamp("data_exclusao");
+                anotacao.setDataExclusao(timestampDataExclusao != null ? timestampDataExclusao.toLocalDateTime().format(formatter) : null);
+
+                
+                anotacao.setCor(rs.getString("cor"));  
+                anotacoes.add(anotacao);
+            }
+
+            instrucaoSQL.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return anotacoes;
     }
